@@ -29,6 +29,10 @@
 			li{
 				list-style: none;
 			}
+			a{
+				text-decoration: none;
+				color:#e31436;
+			}
 			.wrapper{
 				width:100%;
 				overflow-x:hidden;
@@ -168,6 +172,43 @@
 				background:#e31436;
 				color:#fff;
 			}
+			.mask{
+				position:fixed;
+				top:0;
+				left:0;
+				bottom:0;
+				right:0;
+				background:#000;
+				z-index: 99;
+				opacity:0.6;
+				display:none;
+			}
+			.alert{
+				display:none;
+				width:5.2rem;
+				height:2.5rem;
+				background:#fff;
+				border-radius: .2rem;
+				position:fixed;
+				left:50%;
+				top:50%;
+				transform:translate(-50%,-50%);
+				z-index: 100;
+				font-size:.26rem;
+			}
+			.alert p{
+				height:1.5rem;
+				line-height:1.5rem;
+				text-align:center;
+			}
+			.alert a{
+				display:block;
+				width:2rem;
+				height:1rem;
+				line-height:1rem;
+				margin:0 auto;
+				text-align:center;
+			}
 		</style>
 		
 	</head>
@@ -179,11 +220,11 @@
 					<h2>签到</h2>
 				</header>
 				<div class="signIn_btn">
-					<dl class="signIn" style="display:none;">
+					<dl class="signIn" style="display:block;">
 						<dt>签到</dt>
 						<dd>连续签到10天，赠送价值20元优惠券</dd>
 					</dl>
-					<dl class="already" style="display:block;">
+					<dl class="already" style="display:none;">
 						<dt>
 							<p>已签到</p>
 						</dt>
@@ -194,7 +235,7 @@
 			<section class="coupon">
 				<div class="title">优惠券免费领</div>
 				<ul>
-					<li>
+					<li class="active">
 						<div class="coupon_info">
 							<p>￥<strong>20</strong>&nbsp;&nbsp;满200减20</p>
 							<p>指定店铺使用</p>
@@ -225,24 +266,46 @@
 					
 				</ul>
 			</section>
+			<div class="mask"></div>
+			<div class="alert">
+				<p>您已经成功领取优惠券</p>
+				<a href="javascript:;">确定</a>
+			</div>
 		</div>
 	</body>
 	<script>
 		$(function(){
 			//日期
-			
 			var date = new Date();
 			var y = date.getFullYear();
 			var m = date.getMonth()+1;
 			var d = date.getDate();
 			date = '<p>'+y+'-'+m+'-'+d+'</p>';
 			$('dt','.already').prepend(date);
+			//领取按钮不可点击
+			$('.gain_btn').prop('disabled',true);
 			
-			$('.gain_btn').attr('disabled',true);
+			//点击领取优惠券
 			$('.gain_btn').on('click',function(){
-				
-			})
-	
+				$('.alert').css('display','block');
+				$('.mask').css('display','block');
+				$(this).prop('disabled',true);
+			});
+			
+			//确定后弹窗消失
+			$('a','.alert').on('click',function(){
+				$('.alert').css('display','none');
+				$('.mask').css('display','none');
+			});
+			
+			//点击签到
+			$('.signIn').on('click',function(){
+				$('.already').css('display','block');
+				$(this).css('display','none');
+			});
+			
+			
+			//如果类名为active按钮为可点击状态
 			$.each($('li'),function(i){
 				console.log($(this).prop('className'));
 				if($('li')[i].className=='active'){
@@ -250,9 +313,7 @@
 					$('.gain_btn','.active').html('立即领取');
 					$('.gain_btn','.active').prop('disabled',false);
 				}
-			})
-			
-			
+			});
 		})
 	</script>
 </html>
