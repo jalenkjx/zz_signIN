@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+		<title>每日签到</title>
+		<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+		<script>
+			var winWidth = window.innerWidth;
+			var fontSize = winWidth/750*100;
+			var html = document.documentElement;
+			html.style.fontSize = fontSize + "px";
+			window.onresize = function(){
+				var winWidth = window.innerWidth;
+				var fontSize = winWidth/750*100;
+				var html = document.documentElement;
+				html.style.fontSize = fontSize + "px";
+			}
+		</script>
+		<style>
+			*{
+				margin:0;
+				padding:0;
+				border:0;
+			}
+			html, body{
+				font-family: "微软雅黑";
+			}
+			li{
+				list-style: none;
+			}
+			.wrapper{
+				width:100%;
+				overflow-x:hidden;
+			}
+			.header{
+				width:100%;
+				height:5.16rem;
+				background:url('http://og20zwqwb.bkt.clouddn.com/signInhbg.png') no-repeat;
+				background-size:7.5rem;
+			}
+			.header header{
+				height:1rem;
+				width:100%;
+				display:block;
+				overflow:hidden;
+			}
+				
+			.header header span{
+				background:url(http://og20zwqwb.bkt.clouddn.com/signIn_back.png) no-repeat;
+				background-size:1rem;
+				display:block;
+				width:1rem;
+				height:1rem;
+				float:left;
+			}
+			header h2{
+				width:5.5rem;
+				height:1rem;
+				text-align:center;
+				float:left;
+				line-height:1rem;
+				color:#fff;
+				font-size:.34rem;
+			}
+			.signIn_btn{
+				padding-top:.48rem;
+			}
+			.signIn_btn .signIn dt,.signIn_btn .already dt{
+				display:block;
+				width:2.2rem;
+				height:2.2rem;
+				border-radius:50%;
+				box-sizing: border-box;
+				border:.1rem solid #f295a4;
+				background:#fff;
+				color:#e31436;
+				margin:0 auto;
+				line-height:2rem;
+				font-size:.36rem;
+				font-weight:600;
+				text-align:center;
+			}
+			.signIn dd,.already dd{
+				font-size:.26rem;
+				text-align:center;
+				color:#fff;
+				margin-top:.4rem;
+			}
+			.signIn_btn .already dt {
+				background:url(http://og20zwqwb.bkt.clouddn.com/signIn_calendar.png) no-repeat;
+				background-size:.62rem .58rem;
+				background-position-x: center;
+				background-position-y: .3rem;
+				background-color:#fff;
+				padding-top:.8rem;
+				overflow:hidden;
+				font-size:.26rem;
+				
+			}
+			.already dt p:nth-child(1){
+				line-height:.3rem;
+				color:#000;
+				margin-top:.2rem;
+			}
+			.already dt p:nth-child(2){
+				line-height:.3rem;
+				color:#000;
+				margin-top:.1rem;
+			}
+			.coupon{
+				width:100%;
+				box-sizing: border-box;
+				padding-left:.2rem;
+			}
+			.coupon .title{
+				border-left:.08rem solid #e32947;
+				font-size:.26rem;
+				padding-left:.1rem;
+				margin-top:.4rem;
+				margin-bottom:.3rem;
+				
+			}
+			.coupon li{
+				background:url(http://og20zwqwb.bkt.clouddn.com/signIn_libg.png) no-repeat;
+				background-size:3.45rem;
+				width:3.45rem;
+				height:2.53rem;
+				float:left;
+				margin-bottom:.2rem;
+			}
+			.coupon li:nth-child(even){
+				margin-left:.2rem;
+			}
+			li .coupon_info{
+				height:1.6rem;
+				box-sizing: border-box;
+				padding-top:.3rem;
+				padding-left:.2rem;
+				font-size:.26rem;
+				color:#474646;
+			}
+			.coupon_info strong{
+				font-size:.6rem;
+				color:#474646;
+			}
+			.coupon .gain_btn{
+				display:block;
+				width:2.8rem;
+				height:.50rem;
+				border-radius: .25rem;
+				font-size:.24rem;
+				text-align:center;
+				line-height:.50rem;
+				color:#474646;
+				margin:.2rem auto 0 auto;
+			}
+			
+			li.active{
+				background:url(http://og20zwqwb.bkt.clouddn.com/signIn_libgac.png) no-repeat;
+				background-size:3.45rem;
+				width:3.45rem;
+				height:2.53rem;
+				float:left;
+				margin-bottom:.2rem;
+			}
+			li.active .gain_btn{
+				background:#e31436;
+				color:#fff;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div class="wrapper">
+			<section class="header">
+				<header>
+					<span></span>
+					<h2>签到</h2>
+				</header>
+				<div class="signIn_btn">
+					<dl class="signIn" style="display:none;">
+						<dt>签到</dt>
+						<dd>连续签到10天，赠送价值20元优惠券</dd>
+					</dl>
+					<dl class="already" style="display:block;">
+						<dt>
+							<p>已签到</p>
+						</dt>
+						<dd>再连续签到九天，赠送价值20元优惠券</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="coupon">
+				<div class="title">优惠券免费领</div>
+				<ul>
+					<li>
+						<div class="coupon_info">
+							<p>￥<strong>20</strong>&nbsp;&nbsp;满200减20</p>
+							<p>指定店铺使用</p>
+						</div>
+						<button class="gain_btn">连续签到十天可领取</button>
+						
+						
+					</li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</section>
+		</div>
+	</body>
+	<script>
+		$(function(){
+			//日期
+			
+			var date = new Date();
+			var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate();
+			date = '<p>'+y+'-'+m+'-'+d+'</p>';
+			$('dt','.already').prepend(date);
+			
+			$('.gain_btn').attr('disabled',true);
+			$('.gain_btn').on('click',function(){
+				
+			})
+	
+			$.each($('li'),function(i){
+				console.log($(this).prop('className'));
+				if($('li')[i].className=='active'){
+					console.log(i);
+					$('.gain_btn','.active').html('立即领取');
+					$('.gain_btn','.active').prop('disabled',false);
+				}
+			})
+			
+			
+		})
+	</script>
+</html>
