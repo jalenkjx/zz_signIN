@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
 		<title>每日签到</title>
-		<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+		<script src="http://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
 		<script>
 			var winWidth = window.innerWidth;
 			var fontSize = winWidth/750*100;
@@ -22,6 +22,9 @@
 				margin:0;
 				padding:0;
 				border:0;
+			}
+			i{
+				font-style: normal;
 			}
 			html, body{
 				font-family: "微软雅黑";
@@ -51,8 +54,8 @@
 			}
 				
 			.header header span{
-				background:url(http://og20zwqwb.bkt.clouddn.com/signIn_back.png) no-repeat;
-				background-size:1rem;
+				/*background:url(http://og20zwqwb.bkt.clouddn.com/signIn_back.png) no-repeat;
+				background-size:1rem;*/
 				display:block;
 				width:1rem;
 				height:1rem;
@@ -222,47 +225,47 @@
 				<div class="signIn_btn">
 					<dl class="signIn" style="display:block;">
 						<dt>签到</dt>
-						<dd>连续签到10天，赠送价值20元优惠券</dd>
+						<dd>连续签到<span></span>天，赠送价值<span></span>元优惠券</dd>
 					</dl>
 					<dl class="already" style="display:none;">
 						<dt>
 							<p>已签到</p>
 						</dt>
-						<dd>再连续签到九天，赠送价值20元优惠券</dd>
+						<dd>再连续签到<span></span>天，赠送价值<span></span>元优惠券</dd>
 					</dl>
 				</div>
 			</section>
 			<section class="coupon">
 				<div class="title">优惠券免费领</div>
-				<ul>
-					<li class="active">
+				<ul class="couponList">
+					<!--<li>
 						<div class="coupon_info">
-							<p>￥<strong>20</strong>&nbsp;&nbsp;满200减20</p>
+							<p>￥<strong>20</strong>&nbsp;&nbsp;满<i>200</i>减<i>20</i></p>
 							<p>指定店铺使用</p>
 						</div>
-						<button class="gain_btn">连续签到10天可领取</button>
+						<button class="gain_btn">连续签到<i>10</i>天可领取</button>
 					</li>
 					<li>
 						<div class="coupon_info">
-							<p>￥<strong>30</strong>&nbsp;&nbsp;满200减30</p>
+							<p>￥<strong>30</strong>&nbsp;&nbsp;满<i>200</i>减<i>20</i></p>
 							<p>指定店铺使用</p>
 						</div>
-						<button class="gain_btn">连续签到15天可领取</button>
+						<button class="gain_btn">连续签到<i>20</i>天可领取</button>
 					</li>
 					<li>
 						<div class="coupon_info">
-							<p>￥<strong>40</strong>&nbsp;&nbsp;满200减40</p>
+							<p>￥<strong>40</strong>&nbsp;&nbsp;满<i>200</i>减<i>40</i></p>
 							<p>指定店铺使用</p>
 						</div>
-						<button class="gain_btn">连续签到十天可领取</button>
+						<button class="gain_btn">连续签到<i>30</i>天可领取</button>
 					</li>
 					<li>
 						<div class="coupon_info">
-							<p>￥<strong>50</strong>&nbsp;&nbsp;满200减50</p>
+							<p>￥<strong>50</strong>&nbsp;&nbsp;满<i>200</i>减<i>50</i></p>
 							<p>指定店铺使用</p>
 						</div>
-						<button class="gain_btn">连续签到十天可领取</button>
-					</li>
+						<button class="gain_btn">连续签到<i>40</i>天可领取</button>
+					</li>-->
 					
 				</ul>
 			</section>
@@ -274,8 +277,32 @@
 		</div>
 	</body>
 	<script>
-		$(function(){
-			//日期
+	
+	var api = 'http://zhenzhen.s1.natapp.cc/zzht/';
+//	var api = 'http://service.myzhenzhen.com/zzht/';
+	var imgLink = 'http://o6uda1nl0.bkt.clouddn.com/';//内网
+//	var imgLink = 'http://img.myzhenzhen.com/';//外网
+
+	var token = '6a566036-f264-41a7-8675-340b1a82c828';
+	var signin = {
+		init:function(){
+			var _this = this;
+			_this.couponList();
+			$('.signIn').on('click',function(){
+				_this.signInSubmit();
+			});
+			$('.gain_btn').on('click',function(){
+				var couponId = $(this).parent().attr('data-id');
+				console.log(couponId);
+				_this.gainCoupon(couponId);
+				
+			});
+			//确定后弹窗消失
+			$('a','.alert').on('click',function(){
+				$('.alert').css('display','none');
+				$('.mask').css('display','none');
+			});
+			
 			var date = new Date();
 			var y = date.getFullYear();
 			var m = date.getMonth()+1;
@@ -285,35 +312,139 @@
 			//领取按钮不可点击
 			$('.gain_btn').prop('disabled',true);
 			
-			//点击领取优惠券
-			$('.gain_btn').on('click',function(){
-				$('.alert').css('display','block');
-				$('.mask').css('display','block');
-				$(this).prop('disabled',true);
+			_this.checkLi();
+		},
+		//优惠券列表
+		couponList:function(){
+			var _this = this;
+			$.ajax({
+				type:"get",
+				url:api+"v1/api/sign/getData",
+				async:false,
+				headers:{
+					'Authorization': 'Bearer '+token,
+				},
+				success:function(res){
+					console.log(res);
+					console.log(res.datas.couponList);
+					console.log(res.datas)
+					var couponLists = res.datas.couponList;
+					var html = '';
+					
+					$.each(couponLists, function(i) {
+						 html += '<li data-day='+couponLists[i].days+' data-id='+couponLists[i].couponId+'>'+
+										'<div class="coupon_info">'+
+											'<p>￥<strong>'+couponLists[i].coupon.money+'</strong>&nbsp;&nbsp;满<i>'+couponLists[i].coupon.minCharge+'</i>减<i>'+couponLists[i].coupon.money+'</i></p>'+
+											'<p>指定店铺使用</p>'+
+										'</div>'+
+										'<button class="gain_btn">连续签到<i>'+couponLists[i].days+'</i>天可领取</button>'+
+									'</li>';
+					});
+					$('.couponList').html(html);
+					
+					
+					if(res.datas.isSignToday==1){
+						$('.already').css('display','block');
+						$('.signIn').css('display','none');
+					}else{
+						$('.already').css('display','none');
+						$('.signIn').css('display','block');
+					}
+					if(res.datas.nextCoupon == null){
+						$('dd','.signIn').html('已连续签到'+res.datas.signDays+'天');
+						$('dd','.already').html('已连续签到'+res.datas.signDays+'天');
+					}else{
+						//连续签到tip
+						$('.signIn dd span').eq(0).html(res.datas.nextCoupon.days);
+						$('.signIn dd span').eq(1).html(res.datas.nextCoupon.coupon.money);
+						//再连续签到tip
+						$('.already dd span').eq(0).html(res.datas.leftSignDays);
+						$('.already dd span').eq(1).html(res.datas.nextCoupon.coupon.money)
+					}
+					var signDay = res.datas.signDays;
+					_this.addClass(signDay);
+					
+				}
+			});
+		},
+		//签到提交
+		signInSubmit:function(){
+			$.ajax({
+				type:"post",
+				url:api+"v1/api/sign/add",
+				async:false,
+				headers:{
+					'Authorization': 'Bearer '+token
+				},
+				success:function(res){
+					console.log(res);
+					//今日已签到
+					if(res.res_code==212000){
+							alert('今日已签到');
+					}else{
+						$('.already').css('display','block');
+						$('.signIn').css('display','none');
+					}
+				}
+			});
+		},
+		gainCoupon:function(couponId){
+			var _this = this;
+			$.ajax({
+				type:"post",
+				url:api+"v1/api/sign/gainCoupon",
+				async:false,
+				data:{
+					'couponId':couponId
+				},
+				headers:{
+					'Authorization': 'Bearer '+token
+				},
+				success:function(res){
+					console.log(res);
+					//点击领取优惠券
+					if(res.res_code==212002){
+						alert('优惠券领取失败');
+					}else{
+						$('.alert').css('display','block');
+						$('.mask').css('display','block');
+						$(this).prop('disabled',true);
+						var sign_day = res.datas.signDays;
+						_this.addClass(sign_day);
+					}
+						
+					
+					
+				}
 			});
 			
-			//确定后弹窗消失
-			$('a','.alert').on('click',function(){
-				$('.alert').css('display','none');
-				$('.mask').css('display','none');
-			});
 			
-			//点击签到
-			$('.signIn').on('click',function(){
-				$('.already').css('display','block');
-				$(this).css('display','none');
-			});
-			
-			
+		},
+		addClass:function(res){
+			var aLi = $('li','.couponList');
+			aLi.removeClass('active');
+			$.each(aLi,function(i){
+				if(res>=aLi.eq(i).attr('data-day')){
+					aLi.eq(i).addClass('active');
+				}
+			})
+		},
+		checkLi:function(){
 			//如果类名为active按钮为可点击状态
 			$.each($('li'),function(i){
-				console.log($(this).prop('className'));
+				//console.log($(this).prop('className'));
 				if($('li')[i].className=='active'){
-					console.log(i);
+					//console.log(i);
 					$('.gain_btn','.active').html('立即领取');
 					$('.gain_btn','.active').prop('disabled',false);
 				}
 			});
-		})
+		}
+	}//sign in
+	signin.init()
+	
+
+			
+
 	</script>
 </html>
